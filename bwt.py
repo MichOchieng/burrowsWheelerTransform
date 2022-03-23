@@ -2,8 +2,6 @@ import re
 from os import walk
 from pathlib import Path
 
-from numpy import sort
-
 class bwt:
 
     INPUT_FILES  = []
