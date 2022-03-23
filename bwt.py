@@ -2,12 +2,16 @@ import re
 from os import walk
 from pathlib import Path
 
+from numpy import sort
+
 class bwt:
 
     INPUT_FILES  = []
     INPUT_STRING: str
 
-    TRANSFORM_PAIRS = []
+    BW_MATRIX  = []
+    FIRST_COL  = ""
+    SECOND_COL = ""
 
     RESULT: str
 
@@ -29,15 +33,22 @@ class bwt:
         except:
             print("Error reading input file.")
 
-    def getTransform(self,string):
-        # This will create tuples and add them to TRANSFORM_PAIRS to be sorted later
-        self.TRANSFORM_PAIRS.append((string[0],string[len(string)-1]))
-
-        for x in range(len(string)-1):
+    def createMatrix(self,string):
+        for x in range(len(string)):
             string = self.rotate(string)
-            self.TRANSFORM_PAIRS.append((string[0],string[len(string)-1]))
-        print(self.TRANSFORM_PAIRS)
-        print(sorted(self.TRANSFORM_PAIRS,key=lambda x: (x[0],x[1])))
+            self.BW_MATRIX.append(string)
+
+    def getTransform(self,string):
+        # Generate + sort matrix
+        self.createMatrix(string)
+        self.BW_MATRIX.sort()
+
+        for x in self.BW_MATRIX:
+            self.FIRST_COL  = (self.FIRST_COL + x[0]) + str(self.FIRST_COL.count(x[0]))
+            self.SECOND_COL = (self.SECOND_COL + x[-1]) + str(self.SECOND_COL.count(x[0]))
+    
+    def getInverse(self):
+        pass
 
     def rotate(sel,string) -> str:
         # Moves last char in a string to the front of the string
