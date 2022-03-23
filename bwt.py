@@ -13,7 +13,8 @@ class bwt:
     FIRST_COL  = ""
     SECOND_COL = ""
 
-    RESULT: str
+    RESULT     = ""
+    DICTIONARY: dict
 
     def __init__(self) -> None:
         self.getFiles()
@@ -45,10 +46,27 @@ class bwt:
 
         for x in self.BW_MATRIX:
             self.FIRST_COL  = (self.FIRST_COL + x[0]) + str(self.FIRST_COL.count(x[0]))
-            self.SECOND_COL = (self.SECOND_COL + x[-1]) + str(self.SECOND_COL.count(x[0]))
+            self.SECOND_COL = (self.SECOND_COL + x[-1]) + str(self.SECOND_COL.count(x[-1])) 
+
+        self.RESULT = self.RESULT + self.FIRST_COL[:2]
+        # create a dictionary using each letter in FIRST_COL with the corresponding letter in SECOND_COL
+        self.DICTIONARY = dict(
+                    zip(
+                        re.findall("..",self.FIRST_COL),
+                        re.findall("..",self.SECOND_COL)
+                        )
+                    )
+        
+        self.getInverse(self.FIRST_COL[:2])
     
-    def getInverse(self):
-        pass
+    def getInverse(self,key):
+        # Loop through first transform 
+        if len(self.RESULT) < len(self.FIRST_COL):
+            char = self.DICTIONARY[key]
+            self.RESULT = self.RESULT + char
+            self.getInverse(char)
+        else: # Reverse the string
+            self.RESULT = self.RESULT[::-1]
 
     def rotate(sel,string) -> str:
         # Moves last char in a string to the front of the string
@@ -60,6 +78,7 @@ class bwt:
         for file in self.INPUT_FILES:
             self.getString(file)
             self.getTransform(self.INPUT_STRING)
+            print(re.sub(r'\d+','',self.RESULT[:-1]))
 
 if __name__ == "__main__":
     program = bwt()
